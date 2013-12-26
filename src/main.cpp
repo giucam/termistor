@@ -53,6 +53,7 @@ public:
         }
 
         m_term = new Terminal;
+        m_term->setTitle("Termistor");
         if (!window) {
             m_term->setFlags(Qt::BypassWindowManagerHint);
         }
