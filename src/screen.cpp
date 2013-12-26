@@ -150,10 +150,7 @@ void Screen::initCells()
 
     QSize screenSize(columns * m_renderdata.cellW + 2, rows * m_renderdata.cellH + 1);
 
-    if (screenSize.width() != cRect.width() || screenSize.height() != cRect.height()) {
-        m_terminal->setScreenSize(QSize(screenSize.width() + m_margins.left() + m_margins.right(), screenSize.height() + m_margins.top() + m_margins.bottom()));
-        return;
-    }
+    m_forceRedraw = true;
 
     if (m_columns == columns && m_rows == rows && m_cells) {
         return;
@@ -163,6 +160,7 @@ void Screen::initCells()
     m_rows = rows;
     m_renderdata.age = 0;
     m_screenSize = screenSize;
+
 
     if (m_cells) {
         delete[] m_cells;
@@ -307,9 +305,11 @@ void Screen::render(QPainter *painter)
     tsm_vte_get_def_attr(m_vte->vte(), &attr);
 
     QColor bg(attr.br, attr.bg, attr.bb, 240);
+    float wm = geom.width() - m_screenSize.width();
+    float hm = geom.height() - m_screenSize.height();
     painter->fillRect(QRect(QPoint(0, 0), QPoint(m_margins.left(), geom.bottom())), bg);
-    painter->fillRect(QRect(QPoint(geom.right() - m_margins.right(), 0), geom.bottomRight()), bg);
-    painter->fillRect(QRect(QPoint(0, geom.bottom() - m_margins.bottom()), geom.bottomRight()), bg);
+    painter->fillRect(QRect(QPoint(geom.right() - wm + m_margins.left(), 0), geom.bottomRight()), bg);
+    painter->fillRect(QRect(QPoint(0, geom.bottom() - hm + m_margins.top()), geom.bottomRight()), bg);
 
     painter->translate(m_margins.left() + 1, m_margins.top());
 

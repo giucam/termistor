@@ -152,8 +152,8 @@ void Terminal::resizeEvent(QResizeEvent *event)
     }
 
     currentScreen()->resize(size() - QSize(m_borders.left() + m_borders.right(), m_borders.top() + m_borders.bottom()));
-
-    update();
+    m_bordersDirty = true;
+    renderNow();
 }
 
 void Terminal::focusInEvent(QFocusEvent *event)
