@@ -127,7 +127,7 @@ bool Terminal::event(QEvent *event)
         } else if (delScreenRect().contains(p)) {
             delScreen();
         } else if (quitRect().contains(p)) {
-            QCoreApplication::quit();
+            close();
         }
     } break;
     default:
