@@ -1,0 +1,12 @@
+
+
+<protocol name="nuclear_dropdown">
+    <interface name="nuclear_dropdown" version="1">
+
+        <request name="set_surface">
+            <arg name="output" type="object" interface="wl_output"/>
+            <arg name="surface" type="object" interface="wl_surface"/>
+        </request>
+
+    </interface>
+</protocol>
