@@ -32,7 +32,7 @@
 #include "terminal.h"
 
 struct Cell {
-    uint32_t cell;
+    uint32_t id;
     QString str;
     QColor color;
     QColor bgColor;
@@ -108,7 +108,7 @@ public:
         }
     }
 
-    QHash<QString, Glyph> glyphs;
+    QHash<uint32_t, Glyph> glyphs;
     int numImages;
     int size;
     Image *firstImg;
@@ -167,15 +167,12 @@ void Screen::initCells()
     }
 
     m_cells = new Cell[m_rows * m_columns];
-    for (int i = 0; i < m_rows * m_columns; ++i) {
-        m_cells[i].cell = 0;
-    }
 
     tsm_screen_resize(m_vte->screen(), m_columns, m_rows);
     m_vte->resize(m_rows, m_columns);
 }
 
-int Screen::drawCell(const uint32_t *ch, size_t len, uint32_t width, unsigned int posx, unsigned int posy, const tsm_screen_attr *attr, tsm_age_t age)
+int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width, unsigned int posx, unsigned int posy, const tsm_screen_attr *attr, tsm_age_t age)
 {
     if (age && m_renderdata.age && age <= m_renderdata.age && !m_forceRedraw) {
         return 0;
@@ -203,9 +200,9 @@ int Screen::drawCell(const uint32_t *ch, size_t len, uint32_t width, unsigned in
     QColor  c(fr, fg, fb);
     QColor bgc(br, bg, bb, 240);
 
-    if (cell.cell != ch[0] || cell.color != c || cell.bgColor != bgc ||
+    if (cell.id != id || cell.color != c || cell.bgColor != bgc ||
         cell.bold != attr->bold || cell.underline != attr->underline || outline != cell.outline || m_forceRedraw) {
-        cell.cell = ch[0];
+        cell.id = id;
         cell.color = c;
         cell.bgColor = bgc;
         cell.bold = attr->bold;
@@ -226,7 +223,7 @@ int Screen::drawCell(const uint32_t *ch, size_t len, uint32_t width, unsigned in
         if (len) {
             QRgb crgb = c.rgb();
 
-            Glyph &glyph = s_cache.glyphs[cell.str];
+            Glyph &glyph = s_cache.glyphs[id];
             QHash<QRgb, Image *> *hash = &glyph.normalGlyphs;
             if (!cell.underline && cell.bold) {
                 hash = &glyph.boldGlyphs;
@@ -329,7 +326,7 @@ void Screen::render(QPainter *painter)
                                            unsigned int posy,
                                            const tsm_screen_attr *attr,
                                            tsm_age_t age, void *data) -> int {
-                                               return static_cast<Screen *>(data)->drawCell(ch, len, cwidth, posx, posy, attr, age); }, this);
+                                               return static_cast<Screen *>(data)->drawCell(id, ch, len, cwidth, posx, posy, attr, age); }, this);
 
     m_painter = nullptr;
     m_forceRedraw = false;

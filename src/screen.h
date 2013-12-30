@@ -57,7 +57,7 @@ public:
 
 private:
     inline QRect geometry() const { return m_geometry; }
-    int drawCell(const uint32_t *ch, size_t len, uint32_t width, unsigned int posx, unsigned int posy, const tsm_screen_attr *attr, tsm_age_t age);
+    int drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width, unsigned int posx, unsigned int posy, const tsm_screen_attr *attr, tsm_age_t age);
 
     Terminal *m_terminal;
     VTE *m_vte;
