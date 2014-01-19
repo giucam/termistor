@@ -146,6 +146,21 @@ struct {
     { Qt::Key_PageDown, XKB_KEY_Page_Down }
 };
 
+static int findSym(int key)
+{
+    if (key >= Qt::Key_F1 && key <= Qt::Key_F12) {
+        return XKB_KEY_F1 + key - Qt::Key_F1;
+    }
+
+    for (unsigned int i = 0; i < sizeof(keysyms) / sizeof(keysyms[0]); ++i) {
+        if (keysyms[i].qtkey == key) {
+            return keysyms[i].sym;
+        }
+    }
+
+    return 0;
+}
+
 void VTE::keyPress(int key, Qt::KeyboardModifiers modifiers, const QString &string)
 {
     if (modifiers & Qt::ShiftModifier) {
@@ -162,13 +177,7 @@ void VTE::keyPress(int key, Qt::KeyboardModifiers modifiers, const QString &stri
     }
 
     QChar c = string.data()[0];
-    int sym = 0;
-    for (unsigned int i = 0; i < sizeof(keysyms) / sizeof(keysyms[0]); ++i) {
-        if (keysyms[i].qtkey == key) {
-            sym = keysyms[i].sym;
-            break;
-        }
-    }
+
     int mods = 0;
     if (modifiers & Qt::ShiftModifier) mods |= TSM_SHIFT_MASK;
     if (modifiers & Qt::ControlModifier) mods |= TSM_CONTROL_MASK;
@@ -180,7 +189,7 @@ void VTE::keyPress(int key, Qt::KeyboardModifiers modifiers, const QString &stri
         ucs4 = TSM_VTE_INVALID;
     }
 
-    if (tsm_vte_handle_keyboard(m_vte, sym, c.toLatin1(), mods, ucs4)) {
+    if (tsm_vte_handle_keyboard(m_vte, findSym(key), c.toLatin1(), mods, ucs4)) {
         tsm_screen_sb_reset(m_screen);
     }
 }
