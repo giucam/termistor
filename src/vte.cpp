@@ -81,7 +81,7 @@ VTE::VTE(Screen *screen)
     if (pid == 0) {
         char **argv = new char*[3];
         argv[0] = getenv("SHELL") ? : strdup("/bin/sh");
-        argv[1] = strdup("-il");
+        argv[1] = strdup("-i");
         argv[2] = 0;
 
         setenv("TERM", "xterm-256color", 1);
