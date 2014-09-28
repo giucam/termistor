@@ -27,7 +27,7 @@ set(SOURCES
     src/screen.cpp)
 
 wayland_add_protocol_client(SOURCES
-    ${CMAKE_SOURCE_DIR}/protocol/nuclear-dropdown.xml
+    ${CMAKE_SOURCE_DIR}/protocol/orbital-dropdown.xml
     dropdown
 )
 

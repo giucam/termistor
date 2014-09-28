@@ -72,14 +72,22 @@ public:
 
         if (!window) {
             wl_surface *wlSurface = static_cast<wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", m_term));
-            wl_output *output = static_cast<wl_output *>(QGuiApplication::platformNativeInterface()->nativeResourceForScreen("output", screen));
-            nuclear_dropdown_set_surface(m_dropdown, output, wlSurface);
+            orbital_dropdown_surface *surface = orbital_dropdown_get_dropdown_surface(m_dropdown, wlSurface);
+
+            static const orbital_dropdown_surface_listener listener = {
+                [](void *d, orbital_dropdown_surface *surface, int w, int h) {
+                    Term *term = static_cast<Term *>(d);
+                    term->m_term->resize(w * 0.9, h * 0.5);
+                }
+            };
+            orbital_dropdown_surface_add_listener(surface, &listener, this);
         }
     }
 
     wl_display *m_display;
     wl_registry *m_registry;
-    nuclear_dropdown *m_dropdown;
+    orbital_dropdown *m_dropdown;
+    orbital_dropdown_surface *m_surface;
     Terminal *m_term;
     static const wl_registry_listener s_registryListener;
 };
@@ -88,8 +96,8 @@ const wl_registry_listener Term::s_registryListener = {
     [](void *data, wl_registry *registry, uint32_t id, const char *interface, uint32_t version) {
         Term *t = static_cast<Term *>(data);
 
-        if (strcmp(interface, "nuclear_dropdown") == 0) {
-            t->m_dropdown = static_cast<nuclear_dropdown *>(wl_registry_bind(registry, id, &nuclear_dropdown_interface, version));
+        if (strcmp(interface, "orbital_dropdown") == 0) {
+            t->m_dropdown = static_cast<orbital_dropdown *>(wl_registry_bind(registry, id, &orbital_dropdown_interface, 1));
         }
     },
     [](void *, wl_registry *registry, uint32_t id) {}

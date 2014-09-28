@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QFont>
 #include <QMargins>
+#include <QSize>
+#include <QRect>
 
 #include <libtsm.h>
 
