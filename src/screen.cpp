@@ -356,6 +356,11 @@ void Screen::update()
     }
 }
 
+void Screen::paste(const QByteArray &data)
+{
+    m_vte->paste(data);
+}
+
 void Screen::keyPressEvent(QKeyEvent *ev)
 {
     m_vte->keyPress(ev->key(), ev->modifiers(), ev->text());

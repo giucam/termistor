@@ -112,6 +112,11 @@ void VTE::resize(int rows, int cols)
     ioctl(m_master, TIOCSWINSZ, &ws);
 }
 
+void VTE::paste(const QByteArray &data)
+{
+    vte_event(data.constData(), data.length());
+}
+
 void VTE::vte_event(const char *u8, size_t len) {
     QFile file;
     file.open(m_master, QIODevice::WriteOnly);

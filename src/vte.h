@@ -36,6 +36,7 @@ public:
 
     void write(const QChar &ch);
     void resize(int rows, int cols);
+    void paste(const QByteArray &data);
 
     inline tsm_vte *vte() const { return m_vte; }
     inline tsm_screen *screen() const { return m_screen; }

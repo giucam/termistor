@@ -52,6 +52,7 @@ public:
     void render(QPainter *painter);
     void forceRedraw();
 
+    void paste(const QByteArray &data);
     void keyPressEvent(QKeyEvent *ev);
     void wheelEvent(QWheelEvent *ev);
     void focusIn();

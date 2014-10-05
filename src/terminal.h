@@ -57,6 +57,7 @@ private:
     QRect delScreenRect() const;
     QRect tabRect(int i) const;
     QRect quitRect() const;
+    void paste();
 
     QList<Screen *> m_screens;
     int m_currentScreen;

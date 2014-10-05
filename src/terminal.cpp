@@ -17,12 +17,14 @@
  * along with Termistor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QCoreApplication>
+#include <QGuiApplication>
 #include <QBackingStore>
 #include <QPainter>
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QClipboard>
+#include <QMimeData>
 
 #include "terminal.h"
 #include "vte.h"
@@ -106,6 +108,9 @@ bool Terminal::event(QEvent *event)
             } else if (ev->key() == Qt::Key_Up) {
                 addScreen();
                 break;
+            } else if (ev->key() == Qt::Key_Insert) {
+                paste();
+                break;
             }
         }
         currentScreen()->keyPressEvent(ev);
@@ -115,6 +120,10 @@ bool Terminal::event(QEvent *event)
         break;
     case QEvent::MouseButtonPress: {
         QMouseEvent *ev = static_cast<QMouseEvent *>(event);
+        if (ev->button() == Qt::MiddleButton) {
+            paste();
+            break;
+        }
         const QPoint &p = ev->windowPos().toPoint();
         for (int i = 0; i < m_screens.size(); ++i) {
             if (tabRect(i).contains(p)) {
@@ -262,6 +271,19 @@ QRect Terminal::quitRect() const
     return QRect(width() - buttonsHeight - 5, geometry().bottom() - m_borders.bottom() + (m_borders.bottom() - buttonsHeight) / 2, buttonsHeight, buttonsHeight);
 }
 
+void Terminal::paste()
+{
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    const QMimeData *data = clipboard->mimeData();
+    QStringList acceptedFormats = { "text/plain;charset=utf-8", "text/plain" };
+    QStringList availableFormats = data->formats();
+    for (auto &mime: acceptedFormats) {
+        if (availableFormats.contains(mime)) {
+            currentScreen()->paste(data->data(mime));
+            break;
+        }
+    }
+}
 
 // trick to put a newline at app close
 static struct A { ~A() { fprintf(stderr, "\n"); } } a;
