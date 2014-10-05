@@ -31,6 +31,7 @@
 class QPainter;
 class QKeyEvent;
 class QWheelEvent;
+class QMouseEvent;
 
 struct tsm_screen;
 
@@ -52,15 +53,19 @@ public:
     void render(QPainter *painter);
     void forceRedraw();
 
+    QByteArray copy();
     void paste(const QByteArray &data);
     void keyPressEvent(QKeyEvent *ev);
     void wheelEvent(QWheelEvent *ev);
+    void mousePressEvent(QMouseEvent *ev);
+    void mouseMoveEvent(QMouseEvent *ev);
     void focusIn();
     void focusOut();
 
 private:
     inline QRect geometry() const { return m_geometry; }
     int drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width, unsigned int posx, unsigned int posy, const tsm_screen_attr *attr, tsm_age_t age);
+    QPoint gridPosFromGlobal(const QPointF &pos);
 
     Terminal *m_terminal;
     VTE *m_vte;
@@ -84,6 +89,7 @@ private:
     QRect m_geometry;
     bool m_forceRedraw;
     bool m_hasFocus;
+    QPoint m_selectionStart;
 };
 
 #endif

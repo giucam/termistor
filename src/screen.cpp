@@ -356,6 +356,13 @@ void Screen::update()
     }
 }
 
+QByteArray Screen::copy()
+{
+    char *out;
+    tsm_screen_selection_copy(m_vte->screen(), &out);
+    return QByteArray(out);
+}
+
 void Screen::paste(const QByteArray &data)
 {
     m_vte->paste(data);
@@ -377,6 +384,33 @@ void Screen::wheelEvent(QWheelEvent *ev)
     }
     update();
     ev->accept();
+}
+
+QPoint Screen::gridPosFromGlobal(const QPointF &pos)
+{
+    int col = m_columns * pos.x() / m_geometry.width();
+    int row = m_rows * pos.y() / m_geometry.height();
+    int index = (int)row * m_columns + (int)col;
+    index -= 1;
+    col = index % m_columns;
+    row = index / m_columns;
+    return QPoint(col, row);
+}
+
+void Screen::mousePressEvent(QMouseEvent *ev)
+{
+    m_selectionStart = gridPosFromGlobal(ev->pos());
+    tsm_screen_selection_reset(m_vte->screen());
+    ev->accept();
+    update();
+}
+
+void Screen::mouseMoveEvent(QMouseEvent *ev)
+{
+    tsm_screen_selection_start(m_vte->screen(), m_selectionStart.x(), m_selectionStart.y());
+    QPoint p = gridPosFromGlobal(ev->pos());
+    tsm_screen_selection_target(m_vte->screen(), p.x(), p.y());
+    update();
 }
 
 void Screen::focusIn()

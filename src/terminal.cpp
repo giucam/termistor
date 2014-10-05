@@ -30,6 +30,8 @@
 #include "vte.h"
 #include "screen.h"
 
+static const QStringList ACCEPTED_MIMETYPES = { "text/plain;charset=utf-8", "text/plain" };
+
 Terminal::Terminal(QWindow *parent)
         : QWindow(parent)
         , m_updatePending(false)
@@ -112,6 +114,14 @@ bool Terminal::event(QEvent *event)
                 paste();
                 break;
             }
+        } else if (ev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) && ev->key() == Qt::Key_C) {
+            QByteArray data = currentScreen()->copy();
+            QMimeData *mime = new QMimeData;
+            for (auto &t: ACCEPTED_MIMETYPES) {
+                mime->setData(t, data);
+            }
+            QGuiApplication::clipboard()->setMimeData(mime);
+            break;
         }
         currentScreen()->keyPressEvent(ev);
     } break;
@@ -120,10 +130,6 @@ bool Terminal::event(QEvent *event)
         break;
     case QEvent::MouseButtonPress: {
         QMouseEvent *ev = static_cast<QMouseEvent *>(event);
-        if (ev->button() == Qt::MiddleButton) {
-            paste();
-            break;
-        }
         const QPoint &p = ev->windowPos().toPoint();
         for (int i = 0; i < m_screens.size(); ++i) {
             if (tabRect(i).contains(p)) {
@@ -137,6 +143,19 @@ bool Terminal::event(QEvent *event)
             delScreen();
         } else if (quitRect().contains(p)) {
             close();
+        } else {
+            if (ev->button() == Qt::MiddleButton) {
+                paste();
+                break;
+            } else if (ev->button() == Qt::LeftButton) {
+                currentScreen()->mousePressEvent(ev);
+            }
+        }
+    } break;
+    case QEvent::MouseMove: {
+        QMouseEvent *ev = static_cast<QMouseEvent *>(event);
+        if (ev->buttons() == Qt::LeftButton) {
+            currentScreen()->mouseMoveEvent(ev);
         }
     } break;
     default:
@@ -275,9 +294,11 @@ void Terminal::paste()
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
     const QMimeData *data = clipboard->mimeData();
-    QStringList acceptedFormats = { "text/plain;charset=utf-8", "text/plain" };
+    if (!data) {
+        return;
+    }
     QStringList availableFormats = data->formats();
-    for (auto &mime: acceptedFormats) {
+    for (auto &mime: ACCEPTED_MIMETYPES) {
         if (availableFormats.contains(mime)) {
             currentScreen()->paste(data->data(mime));
             break;
