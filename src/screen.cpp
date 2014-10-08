@@ -198,7 +198,7 @@ int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width
         bb = attr->bb;
     }
     QColor  c(fr, fg, fb);
-    QColor bgc(br, bg, bb, 240);
+    QColor bgc(br, bg, bb, 230);
 
     if (cell.id != id || cell.color != c || cell.bgColor != bgc ||
         cell.bold != attr->bold || cell.underline != attr->underline || outline != cell.outline || m_forceRedraw) {
