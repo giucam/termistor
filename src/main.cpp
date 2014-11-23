@@ -78,6 +78,7 @@ public:
                 [](void *d, orbital_dropdown_surface *surface, int w, int h) {
                     Term *term = static_cast<Term *>(d);
                     term->m_term->resize(w * 0.9, h * 0.5);
+                    term->m_term->update();
                 }
             };
             orbital_dropdown_surface_add_listener(surface, &listener, this);
