@@ -35,7 +35,7 @@ static const QStringList ACCEPTED_MIMETYPES = { "text/plain;charset=utf-8", "tex
 Terminal::Terminal(QWindow *parent)
         : QWindow(parent)
         , m_updatePending(false)
-        , m_borders(1, 0, 1, 20)
+        , m_borders(2, 0, 2, 20)
         , m_bordersDirty(true)
         , m_backingStore(nullptr)
 {
@@ -61,6 +61,9 @@ void Terminal::render()
         painter.fillRect(QRect(QPoint(0, 0), QPoint(m_borders.left(), geom.bottom())), Qt::white);
         painter.fillRect(QRect(QPoint(geom.right() - m_borders.right(), 0), geom.bottomRight()), Qt::white);
         painter.fillRect(QRect(QPoint(0, geom.bottom() - m_borders.bottom()), geom.bottomRight()), Qt::white);
+        painter.drawLine(geom.topLeft(), geom.bottomLeft());
+        painter.drawLine(geom.topRight(), geom.bottomRight());
+        painter.drawLine(geom.bottomLeft(), geom.bottomRight());
 
         painter.setBrush(Qt::NoBrush);
         painter.setPen(Qt::black);
