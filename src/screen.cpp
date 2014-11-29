@@ -124,7 +124,7 @@ Screen::Screen(Terminal *t)
       , m_rows(0)
       , m_columns(0)
       , m_cells(nullptr)
-      , m_margins(2, 0, 2, 2)
+      , m_margins(2, 2, 2, 2)
       , m_forceRedraw(false)
       , m_hasFocus(false)
 {
