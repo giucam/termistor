@@ -20,6 +20,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QDebug>
+#include <QDir>
 #include <qpa/qplatformnativeinterface.h>
 
 #include <wayland-client.h>
@@ -113,6 +114,7 @@ void usage()
 
 int main(int argc, char *argv[])
 {
+    QDir::setCurrent(QDir::homePath());
     QGuiApplication app(argc, argv);
 
     bool window = false;
