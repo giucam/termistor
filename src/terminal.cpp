@@ -40,6 +40,7 @@ Terminal::Terminal(QWindow *parent)
         , m_backingStore(nullptr)
 {
     setSurfaceType(QWindow::RasterSurface);
+    setCursor(QCursor(Qt::IBeamCursor));
 
     m_screens << new Screen(this);
     m_currentScreen = 0;
