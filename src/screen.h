@@ -43,10 +43,12 @@ class Screen : public QObject
 {
     Q_OBJECT
 public:
-    explicit Screen(Terminal *term);
+    explicit Screen(Terminal *term, const QString &name);
     ~Screen();
 
     void initCells();
+
+    QString name() const;
 
     void resize(const QSize &size);
     void update();
@@ -71,6 +73,7 @@ private:
     VTE *m_vte;
     int m_rows;
     int m_columns;
+    QString m_name;
 
     Cell *m_cells;
     Cell *m_cursor;

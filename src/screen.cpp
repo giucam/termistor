@@ -117,12 +117,13 @@ public:
 
 static Cache s_cache;
 
-Screen::Screen(Terminal *t)
+Screen::Screen(Terminal *t, const QString &name)
       : QObject()
       , m_terminal(t)
       , m_vte(new VTE(this))
       , m_rows(0)
       , m_columns(0)
+      , m_name(name)
       , m_cells(nullptr)
       , m_margins(2, 2, 2, 2)
       , m_forceRedraw(false)
@@ -170,6 +171,11 @@ void Screen::initCells()
 
     tsm_screen_resize(m_vte->screen(), m_columns, m_rows);
     m_vte->resize(m_rows, m_columns);
+}
+
+QString Screen::name() const
+{
+    return m_name;
 }
 
 int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width, unsigned int posx, unsigned int posy, const tsm_screen_attr *attr, tsm_age_t age)

@@ -42,8 +42,8 @@ Terminal::Terminal(QWindow *parent)
     setSurfaceType(QWindow::RasterSurface);
     setCursor(QCursor(Qt::IBeamCursor));
 
-    m_screens << new Screen(this);
     m_currentScreen = 0;
+    addScreen();
 }
 
 void Terminal::render()
@@ -83,7 +83,7 @@ void Terminal::render()
             painter.drawRect(r);
             font.setBold(m_currentScreen == i);
             painter.setFont(font);
-            painter.drawText(r,  Qt::AlignCenter, tr("Shell %1").arg(i + 1));
+            painter.drawText(r,  Qt::AlignCenter, m_screens.at(i)->name());
         }
     }
 
@@ -118,14 +118,22 @@ bool Terminal::event(QEvent *event)
                 paste();
                 break;
             }
-        } else if (ev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) && ev->key() == Qt::Key_C) {
-            QByteArray data = currentScreen()->copy();
-            QMimeData *mime = new QMimeData;
-            for (auto &t: ACCEPTED_MIMETYPES) {
-                mime->setData(t, data);
+        } else if (ev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
+            if (ev->key() == Qt::Key_Left) {
+                moveScreen(m_currentScreen, -1);
+                break;
+            } else if (ev->key() == Qt::Key_Right) {
+                moveScreen(m_currentScreen, +1);
+                break;
+            } else if (ev->key() == Qt::Key_C) {
+                QByteArray data = currentScreen()->copy();
+                QMimeData *mime = new QMimeData;
+                for (auto &t: ACCEPTED_MIMETYPES) {
+                    mime->setData(t, data);
+                }
+                QGuiApplication::clipboard()->setMimeData(mime);
+                break;
             }
-            QGuiApplication::clipboard()->setMimeData(mime);
-            break;
         }
         currentScreen()->keyPressEvent(ev);
     } break;
@@ -235,7 +243,8 @@ void Terminal::renderNow()
 
 void Terminal::addScreen()
 {
-    m_screens << new Screen(this);
+    static int i = 1;
+    m_screens << new Screen(this, QString("Shell %1").arg(i++));
     setScreen(m_screens.size() - 1);
 }
 
@@ -308,6 +317,21 @@ void Terminal::paste()
             break;
         }
     }
+}
+
+void Terminal::moveScreen(int cur, int d)
+{
+    int index = cur + d;
+    int size = m_screens.size();
+    while (index < 0) index += size;
+    while (index >= size) index -= size;
+
+    Screen *screen = m_screens.takeAt(cur);
+    m_screens.insert(index, screen);
+    m_currentScreen = index;
+
+    m_bordersDirty = true;
+    update();
 }
 
 // trick to put a newline at app close
