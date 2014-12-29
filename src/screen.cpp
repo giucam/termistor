@@ -388,9 +388,9 @@ void Screen::wheelEvent(QWheelEvent *ev)
 
 QPoint Screen::gridPosFromGlobal(const QPointF &pos)
 {
-    int col = m_columns * pos.x() / m_geometry.width();
-    int row = m_rows * pos.y() / m_geometry.height();
-    int index = (int)row * m_columns + (int)col;
+    int col = (double)(m_columns * pos.x()) / (double)m_geometry.width() + 0.5;
+    int row = (double)(m_rows * pos.y()) / (double)m_geometry.height() + 0.5;
+    int index = row * m_columns + col;
     index -= 1;
     col = index % m_columns;
     row = index / m_columns;
