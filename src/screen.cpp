@@ -310,6 +310,7 @@ void Screen::render(QPainter *painter)
     QColor bg(attr.br, attr.bg, attr.bb, 240);
     float wm = geom.width() - m_screenSize.width();
     float hm = geom.height() - m_screenSize.height();
+    painter->fillRect(QRect(QPoint(0, 0), QPoint(geom.width() - m_margins.right(), m_margins.top())), bg);
     painter->fillRect(QRect(QPoint(0, 0), QPoint(m_margins.left(), geom.bottom())), bg);
     painter->fillRect(QRect(QPoint(geom.right() - wm + m_margins.left(), 0), geom.bottomRight()), bg);
     painter->fillRect(QRect(QPoint(0, geom.bottom() - hm + m_margins.top()), geom.bottomRight()), bg);
