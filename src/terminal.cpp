@@ -40,7 +40,6 @@ Terminal::Terminal(QWindow *parent)
         , m_backingStore(nullptr)
 {
     setSurfaceType(QWindow::RasterSurface);
-    setCursor(QCursor(Qt::IBeamCursor));
 
     m_currentScreen = 0;
     addScreen();
@@ -168,6 +167,13 @@ bool Terminal::event(QEvent *event)
         QMouseEvent *ev = static_cast<QMouseEvent *>(event);
         if (ev->buttons() == Qt::LeftButton) {
             currentScreen()->mouseMoveEvent(ev);
+        } else {
+            QRect geom = geometry().marginsRemoved(m_borders);
+            if (geom.contains(ev->pos())) {
+                setCursor(QCursor(Qt::IBeamCursor));
+            } else {
+                setCursor(QCursor(Qt::ArrowCursor));
+            }
         }
     } break;
     default:
