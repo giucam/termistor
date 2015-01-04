@@ -128,6 +128,7 @@ Screen::Screen(Terminal *t, const QString &name)
       , m_margins(2, 2, 2, 2)
       , m_forceRedraw(false)
       , m_hasFocus(false)
+      , m_backgroundAlpha(250)
 {
     m_renderdata.font = QFont("Monospace");
     m_renderdata.font.setPixelSize(12);
@@ -204,7 +205,7 @@ int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width
         bb = attr->bb;
     }
     QColor  c(fr, fg, fb);
-    QColor bgc(br, bg, bb, 230);
+    QColor bgc(br, bg, bb, m_backgroundAlpha);
 
     if (cell.id != id || cell.color != c || cell.bgColor != bgc ||
         cell.bold != attr->bold || cell.underline != attr->underline || outline != cell.outline || m_forceRedraw) {
@@ -307,7 +308,7 @@ void Screen::render(QPainter *painter)
     tsm_screen_attr attr;
     tsm_vte_get_def_attr(m_vte->vte(), &attr);
 
-    QColor bg(attr.br, attr.bg, attr.bb, 240);
+    QColor bg(attr.br, attr.bg, attr.bb, m_backgroundAlpha);
     float wm = geom.width() - m_screenSize.width();
     float hm = geom.height() - m_screenSize.height();
     painter->fillRect(QRect(QPoint(0, 0), QPoint(geom.width() - m_margins.right(), m_margins.top())), bg);

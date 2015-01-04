@@ -93,6 +93,7 @@ private:
     bool m_forceRedraw;
     bool m_hasFocus;
     QPoint m_selectionStart;
+    int m_backgroundAlpha;
 };
 
 #endif
