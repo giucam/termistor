@@ -289,6 +289,28 @@ enum tsm_vte_modifier {
 	TSM_LOGO_MASK		= (1 << 4),
 };
 
+enum tsm_vte_color {
+    TSM_COLOR_BLACK,
+    TSM_COLOR_RED,
+    TSM_COLOR_GREEN,
+    TSM_COLOR_YELLOW,
+    TSM_COLOR_BLUE,
+    TSM_COLOR_MAGENTA,
+    TSM_COLOR_CYAN,
+    TSM_COLOR_LIGHT_GREY,
+    TSM_COLOR_DARK_GREY,
+    TSM_COLOR_LIGHT_RED,
+    TSM_COLOR_LIGHT_GREEN,
+    TSM_COLOR_LIGHT_YELLOW,
+    TSM_COLOR_LIGHT_BLUE,
+    TSM_COLOR_LIGHT_MAGENTA,
+    TSM_COLOR_LIGHT_CYAN,
+    TSM_COLOR_WHITE,
+    TSM_COLOR_FOREGROUND,
+    TSM_COLOR_BACKGROUND,
+    TSM_COLOR_NUM
+};
+
 /* keep in sync with TSM_INPUT_INVALID */
 #define TSM_VTE_INVALID 0xffffffff
 
@@ -304,6 +326,7 @@ void tsm_vte_ref(struct tsm_vte *vte);
 void tsm_vte_unref(struct tsm_vte *vte);
 
 int tsm_vte_set_palette(struct tsm_vte *vte, const char *palette);
+int tsm_vte_set_palette_colors(struct tsm_vte *vte, const uint8_t (*colors)[3], int num_colors);
 void tsm_vte_get_def_attr(struct tsm_vte *vte, struct tsm_screen_attr *out);
 
 void tsm_vte_reset(struct tsm_vte *vte);
