@@ -132,6 +132,9 @@ bool Terminal::event(QEvent *event)
                 }
                 QGuiApplication::clipboard()->setMimeData(mime);
                 break;
+            } else if (ev->key() == Qt::Key_V) {
+                paste();
+                break;
             }
         }
         currentScreen()->keyPressEvent(ev);
