@@ -368,7 +368,12 @@ QByteArray Screen::copy()
 {
     char *out;
     int len = tsm_screen_selection_copy(m_vte->screen(), &out);
-    return QByteArray::fromRawData(out, len);
+    for (int i = 0; i < len; ++i) {
+        if (out[i] == 0) out[i] = ' ';
+    }
+    QByteArray data(out, len);
+    free(out);
+    return data;
 }
 
 void Screen::paste(const QByteArray &data)
