@@ -426,6 +426,52 @@ void Screen::mouseMoveEvent(QMouseEvent *ev)
     update();
 }
 
+static inline bool isValidChar(char c)
+{
+    QChar cc(c);
+    if (cc.isSpace())
+        return false;
+
+    switch (c) {
+        case '(':
+        case ')':
+        case '[':
+        case ']':
+        case '{':
+        case '}':
+        case '\0':
+            return false;
+        default:
+            break;
+    }
+
+    return true;
+}
+
+void Screen::mouseDoubleClickEvent(QMouseEvent *ev)
+{
+    if (ev->button() != Qt::LeftButton) {
+        return;
+    }
+
+    QPoint p = gridPosFromGlobal(ev->pos());
+    if (isValidChar(getCharacter(p.x(), p.y()))) {
+        int left = p.x();
+        int right = p.x();
+        for (; left >= 0; -- left) {
+            if (!isValidChar(getCharacter(left, p.y())))
+                break;
+        }
+        for (; right < m_columns; ++right) {
+            if (!isValidChar(getCharacter(right, p.y())))
+                break;
+        }
+
+        tsm_screen_selection_start(m_vte->screen(), left + 1, p.y());
+        tsm_screen_selection_target(m_vte->screen(), right - 1, p.y());
+    }
+}
+
 void Screen::focusIn()
 {
     m_hasFocus = true;
@@ -443,4 +489,16 @@ void Screen::focusOut()
 void Screen::forceRedraw()
 {
     m_forceRedraw = true;
+}
+
+char Screen::getCharacter(int x, int y)
+{
+    tsm_screen_selection_start(m_vte->screen(), x, y);
+    tsm_screen_selection_target(m_vte->screen(), x, y);
+    char c, *d;
+    tsm_screen_selection_copy(m_vte->screen(), &d);
+    c = d[0];
+    free(d);
+    tsm_screen_selection_reset(m_vte->screen());
+    return c;
 }

@@ -179,6 +179,13 @@ bool Terminal::event(QEvent *event)
             }
         }
     } break;
+    case QEvent::MouseButtonDblClick: {
+        QMouseEvent *ev = static_cast<QMouseEvent *>(event);
+        QRect geom = geometry().marginsRemoved(m_borders);
+        if (geom.contains(ev->pos())) {
+            currentScreen()->mouseDoubleClickEvent(ev);
+        }
+    } break;
     default:
         break;
     }
