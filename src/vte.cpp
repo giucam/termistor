@@ -114,7 +114,9 @@ void VTE::resize(int rows, int cols)
 
 void VTE::paste(const QByteArray &data)
 {
-    vte_event(data.constData(), data.length());
+    QByteArray d = data;
+    d.replace('\n', '\r');
+    vte_event(d.constData(), data.length());
 }
 
 void VTE::vte_event(const char *u8, size_t len) {
