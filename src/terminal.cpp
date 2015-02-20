@@ -126,11 +126,13 @@ bool Terminal::event(QEvent *event)
                 break;
             } else if (ev->key() == Qt::Key_C) {
                 QByteArray data = currentScreen()->copy();
-                QMimeData *mime = new QMimeData;
-                for (auto &t: ACCEPTED_MIMETYPES) {
-                    mime->setData(t, data);
+                if (!data.isEmpty()) {
+                    QMimeData *mime = new QMimeData;
+                    for (auto &t: ACCEPTED_MIMETYPES) {
+                        mime->setData(t, data);
+                    }
+                    QGuiApplication::clipboard()->setMimeData(mime);
                 }
-                QGuiApplication::clipboard()->setMimeData(mime);
                 break;
             } else if (ev->key() == Qt::Key_V) {
                 paste();
