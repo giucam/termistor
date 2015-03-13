@@ -19,6 +19,7 @@ set(CMAKE_AUTOMOC ON)
 foreach(dir ${Qt5Gui_INCLUDE_DIRS})
     include_directories(${dir}/${Qt5Gui_VERSION_STRING}/QtGui/)
 endforeach(dir)
+include_directories(${wayland-client_INCLUDE_DIRS})
 
 set(SOURCES
     src/main.cpp
