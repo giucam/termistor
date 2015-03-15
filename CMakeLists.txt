@@ -14,12 +14,13 @@ find_package(PkgConfig "0.22" REQUIRED)
 
 pkg_check_modules(libtsm libtsm REQUIRED)
 pkg_check_modules(wayland-client wayland-client REQUIRED)
+pkg_check_modules(xkbcommon xkbcommon REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 foreach(dir ${Qt5Gui_INCLUDE_DIRS})
     include_directories(${dir}/${Qt5Gui_VERSION_STRING}/QtGui/)
 endforeach(dir)
-include_directories(${wayland-client_INCLUDE_DIRS})
+include_directories(${wayland-client_INCLUDE_DIRS} ${xkbcommon_INCLUDE_DIRS})
 
 set(SOURCES
     src/main.cpp
