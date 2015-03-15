@@ -405,10 +405,9 @@ void Screen::wheelEvent(QWheelEvent *ev)
 
 QPoint Screen::gridPosFromGlobal(const QPointF &pos)
 {
-    int col = pos.x() / (double)m_renderdata.cellW + 0.5;
-    int row = pos.y() / (double)m_renderdata.cellH;
-    int index = row * m_columns + col;
-    index -= 1;
+    int col = qBound<int>(1, pos.x() / (double)m_renderdata.cellW + 0.5, m_columns + 1);
+    int row = qBound<int>(0, pos.y() / (double)m_renderdata.cellH, m_rows);
+    int index = row * m_columns + col - 1;
     col = index % m_columns;
     row = index / m_columns;
     return QPoint(col, row);
