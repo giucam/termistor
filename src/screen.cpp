@@ -372,10 +372,32 @@ QByteArray Screen::copy()
         return QByteArray();
     }
 
+    QByteArray data;
+    int startline = 0;
+    int lastnonspace = -1;
     for (int i = 0; i < len; ++i) {
-        if (out[i] == 0) out[i] = ' ';
+        if (out[i] == 0) {
+            out[i] = ' ';
+        }
+
+        if (out[i] == '\n' || i == len - 1) {
+            if (lastnonspace == len - 1 || lastnonspace < 0) {
+                startline = i + 1;
+                continue;
+            }
+
+            if (i != len - 1) {
+                out[lastnonspace + 1] = '\n';
+            }
+
+            data.append(out + startline, lastnonspace + 2 - startline);
+            lastnonspace = i;
+            startline = i + 1;
+        } else if (out[i] != ' ') {
+            lastnonspace = i;
+        }
     }
-    QByteArray data(out, len);
+
     free(out);
     return data;
 }
