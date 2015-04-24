@@ -445,7 +445,10 @@ void Screen::mousePressEvent(QMouseEvent *ev)
 
 void Screen::mouseMoveEvent(QMouseEvent *ev)
 {
-    tsm_screen_selection_start(m_vte->screen(), m_selectionStart.x(), m_selectionStart.y());
+    if (m_selectionStart.x() >= 0) {
+        tsm_screen_selection_start(m_vte->screen(), m_selectionStart.x(), m_selectionStart.y());
+        m_selectionStart.setX(-1);
+    }
     QPoint p = gridPosFromGlobal(ev->pos());
     tsm_screen_selection_target(m_vte->screen(), p.x(), p.y());
     update();
