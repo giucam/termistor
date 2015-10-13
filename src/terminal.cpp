@@ -274,11 +274,11 @@ void Terminal::delScreen()
 
     Screen *screen = currentScreen();
     m_screens.removeOne(screen);
-    delete screen;
 
     int s = m_currentScreen - 1;
     if (s < 0) s = m_screens.size() - 1;
     setScreen(s);
+    delete screen;
 }
 
 void Terminal::setScreen(int i)
