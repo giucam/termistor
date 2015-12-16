@@ -20,7 +20,7 @@
 #include <assert.h>
 
 #include <QColor>
-#include <QFontMetricsF>
+#include <QFontMetrics>
 #include <QPainter>
 #include <QWheelEvent>
 #include <QKeyEvent>
@@ -132,7 +132,7 @@ Screen::Screen(Terminal *t, const QString &name)
 {
     m_renderdata.font = QFont("Monospace");
     m_renderdata.font.setPixelSize(12);
-    QFontMetricsF metrics(m_renderdata.font);
+    QFontMetrics metrics(m_renderdata.font);
     m_renderdata.cellW = metrics.width(' ');
     m_renderdata.cellH = metrics.height();
     m_renderdata.age = 0;
@@ -219,7 +219,7 @@ int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width
             cell.str = QString::fromUcs4(ch, len);
         }
 
-        QRectF rect(posx * m_renderdata.cellW, posy * m_renderdata.cellH, width * m_renderdata.cellW, m_renderdata.cellH);
+        QRect rect(posx * m_renderdata.cellW, posy * m_renderdata.cellH, width * m_renderdata.cellW, m_renderdata.cellH);
 
         m_painter->setCompositionMode(QPainter::CompositionMode_Source);
         m_painter->fillRect(rect, bgc);
@@ -282,7 +282,7 @@ int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width
             }
 
             m_painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-            m_painter->drawImage(QPointF(posx * m_renderdata.cellW, posy * m_renderdata.cellH), img->image);
+            m_painter->drawImage(posx * m_renderdata.cellW, posy * m_renderdata.cellH, img->image);
         }
     }
 

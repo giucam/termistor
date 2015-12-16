@@ -82,8 +82,8 @@ private:
 
     QPainter *m_painter;
     struct {
-        qreal cellW;
-        qreal cellH;
+        int cellW;
+        int cellH;
         QFont font;
         tsm_age_t age;
     } m_renderdata;
