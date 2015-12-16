@@ -219,7 +219,7 @@ int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width
             cell.str = QString::fromUcs4(ch, len);
         }
 
-        QRect rect(posx * m_renderdata.cellW, posy * m_renderdata.cellH, width * m_renderdata.cellW, m_renderdata.cellH);
+        QRectF rect(posx * m_renderdata.cellW, posy * m_renderdata.cellH, width * m_renderdata.cellW, m_renderdata.cellH);
 
         m_painter->setCompositionMode(QPainter::CompositionMode_Source);
         m_painter->fillRect(rect, bgc);
@@ -282,7 +282,7 @@ int Screen::drawCell(uint32_t id, const uint32_t *ch, size_t len, uint32_t width
             }
 
             m_painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-            m_painter->drawImage(posx * m_renderdata.cellW, posy * m_renderdata.cellH, img->image);
+            m_painter->drawImage(QPointF(posx * m_renderdata.cellW, posy * m_renderdata.cellH), img->image);
         }
     }
 
