@@ -131,7 +131,8 @@ void VTE::onSocketActivated(int socket) {
     QByteArray data = file.readAll();
     if (data.length() == 0) {
         Debugger::print("No data read. Exiting.");
-        exit(0);
+        m_termScreen->close();
+        return;
     }
     tsm_vte_input(m_vte, data.constData(), data.length());
     m_termScreen->update();

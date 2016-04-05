@@ -37,6 +37,7 @@ public:
     void render();
     void renderNow();
     void update();
+    void closeScreen(Screen *screen);
 
     inline Screen *currentScreen() const { return m_screens.at(m_currentScreen); }
     void setScreenSize(const QSize &s);

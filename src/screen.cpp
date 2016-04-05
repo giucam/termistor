@@ -535,3 +535,8 @@ char Screen::getCharacter(int x, int y)
     tsm_screen_selection_reset(m_vte->screen());
     return c;
 }
+
+void Screen::close()
+{
+    m_terminal->closeScreen(this);
+}

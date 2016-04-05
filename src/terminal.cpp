@@ -259,6 +259,23 @@ void Terminal::renderNow()
     m_backingStore->flush(QRect(0, 0, width(),height()), this);
 }
 
+void Terminal::closeScreen(Screen *screen)
+{
+    Screen *cur = currentScreen();
+    m_screens.removeOne(screen);
+
+    if (cur == screen) {
+        if (m_screens.isEmpty()) {
+            addScreen();
+        } else {
+            int s = m_currentScreen - 1;
+            if (s < 0) s = m_screens.size() - 1;
+            setScreen(s);
+        }
+    }
+    delete screen;
+}
+
 void Terminal::addScreen()
 {
     static int i = 1;
@@ -272,13 +289,7 @@ void Terminal::delScreen()
         return;
     }
 
-    Screen *screen = currentScreen();
-    m_screens.removeOne(screen);
-
-    int s = m_currentScreen - 1;
-    if (s < 0) s = m_screens.size() - 1;
-    setScreen(s);
-    delete screen;
+    closeScreen(currentScreen());
 }
 
 void Terminal::setScreen(int i)

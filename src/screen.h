@@ -50,6 +50,7 @@ public:
 
     QString name() const;
 
+    void close();
     void resize(const QSize &size);
     void update();
     void render(QPainter *painter);
