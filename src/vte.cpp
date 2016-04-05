@@ -60,6 +60,29 @@ static void log(void *data, const char *file, int line, const char *func, const 
     Debugger::print(msg);
 }
 
+
+static uint8_t color_palette_solarized_white[TSM_COLOR_NUM][3] = {
+	[TSM_COLOR_BLACK]         = {  63,  63,  63 }, /* black */
+	[TSM_COLOR_RED]           = { 112,  80,  80 }, /* red */
+	[TSM_COLOR_GREEN]         = { 96,  180, 138 }, /* green */
+	[TSM_COLOR_YELLOW]        = { 223, 175, 143 }, /* yellow */
+	[TSM_COLOR_BLUE]          = { 154, 184, 215 }, /* blue */
+	[TSM_COLOR_MAGENTA]       = { 220, 140, 195 }, /* magenta */
+	[TSM_COLOR_CYAN]          = { 140, 208, 211 }, /* cyan */
+	[TSM_COLOR_LIGHT_GREY]    = { 238, 232, 213 }, /* light grey */
+	[TSM_COLOR_DARK_GREY]     = { 112, 144, 128 }, /* dark grey */
+	[TSM_COLOR_LIGHT_RED]     = { 220, 163, 163 }, /* light red */
+	[TSM_COLOR_LIGHT_GREEN]   = { 114, 213, 163 }, /* light green */
+	[TSM_COLOR_LIGHT_YELLOW]  = { 240, 223, 175 }, /* light yellow */
+	[TSM_COLOR_LIGHT_BLUE]    = { 148, 191, 243 }, /* light blue */
+	[TSM_COLOR_LIGHT_MAGENTA] = { 236, 147, 211 }, /* light magenta */
+	[TSM_COLOR_LIGHT_CYAN]    = { 147, 224, 227 }, /* light cyan */
+	[TSM_COLOR_WHITE]         = { 253, 246, 227 }, /* white */
+
+	[TSM_COLOR_FOREGROUND]    = { 220, 220, 204 }, /* black */
+	[TSM_COLOR_BACKGROUND]    = {  44,  44,  44 }, /* light grey */
+};
+
 VTE::VTE(Screen *screen)
    : QObject(screen)
    , m_termScreen(screen)
@@ -75,6 +98,7 @@ VTE::VTE(Screen *screen)
         tsm_screen_unref(m_screen);
         qFatal("Failed to create tsm vte");
     }
+    tsm_vte_set_palette_colors(m_vte, color_palette_solarized_white, TSM_COLOR_NUM);
     tsm_screen_set_max_sb(m_screen, 10000);
 
     pid_t pid = forkpty(&m_master, NULL, NULL, NULL);
