@@ -96,6 +96,7 @@ private:
     bool m_hasFocus;
     QPoint m_selectionStart;
     int m_backgroundAlpha;
+    double m_accumDelta;
 };
 
 #endif

@@ -129,6 +129,7 @@ Screen::Screen(Terminal *t, const QString &name)
       , m_forceRedraw(false)
       , m_hasFocus(false)
       , m_backgroundAlpha(250)
+      , m_accumDelta(0)
 {
     m_renderdata.font = QFont("Monospace");
     m_renderdata.font.setPixelSize(12);
@@ -415,11 +416,15 @@ void Screen::keyPressEvent(QKeyEvent *ev)
 
 void Screen::wheelEvent(QWheelEvent *ev)
 {
-    int delta = ev->angleDelta().y() / 40;
-    if (delta > 0) {
+    m_accumDelta += ev->angleDelta().y() / 40.;
+    if (m_accumDelta >= 1) {
+        int delta = floor(m_accumDelta);
         tsm_screen_sb_up(m_vte->screen(), delta);
-    } else {
+        m_accumDelta -= delta;
+    } else if (m_accumDelta <= -1) {
+        int delta = ceil(m_accumDelta);
         tsm_screen_sb_down(m_vte->screen(), -delta);
+        m_accumDelta -= delta;
     }
     update();
     ev->accept();
