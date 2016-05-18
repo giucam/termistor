@@ -114,6 +114,8 @@ void usage()
 
 int main(int argc, char *argv[])
 {
+    setenv("QT_WAYLAND_USE_BYPASSWINDOWMANAGERHINT", "1", 1);
+
     QDir::setCurrent(QDir::homePath());
     QGuiApplication app(argc, argv);
 
