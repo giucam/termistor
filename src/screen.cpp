@@ -473,6 +473,7 @@ static inline bool isValidChar(char c)
         case ']':
         case '{':
         case '}':
+        case '"':
         case '\0':
             return false;
         default:
