@@ -18,6 +18,7 @@
  */
 
 #include <assert.h>
+#include <math.h>
 
 #include <QColor>
 #include <QFontMetrics>
